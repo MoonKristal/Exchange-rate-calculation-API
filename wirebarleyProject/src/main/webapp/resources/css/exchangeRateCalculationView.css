@@ -1,0 +1,30 @@
+div{
+    /* border: 1px solid black; */
+    font-size: 18px;
+    line-height: 35px;
+}
+.wrap{
+    border: 3px solid lightsteelblue;
+    width: 330px;
+}
+.calculation{
+    padding-left: 25px;
+}
+h1{
+    padding-left: 25px;
+    margin: 0%;
+    margin-top: 15px;
+}
+select{
+    height: 25px;
+}
+button{
+    width: 150px;
+    height: 35px;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bolder;
+}
+.result{
+    margin-left: 10px;
+}
