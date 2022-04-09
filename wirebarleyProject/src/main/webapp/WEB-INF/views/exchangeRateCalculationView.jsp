@@ -20,7 +20,7 @@
 				<option value="php">필리핀(PHP)</option>
 			</select><br>
 			환율 : 1,119.93 KRW/USD <br>
-			송금액 : <input type="text" name="remittance" id="remittance"> USD <br>
+			송금액 : <input type="text" name="remittance" id="remittance" onkeyup="enterKey();"> USD <br>
 			<button onclick="submit();">Submit</button>
 		</div>
 		<br>
@@ -30,6 +30,16 @@
 	</div>
 	
 	<script>
+		// input태그에서 enter키를 누르면 바로 submit메소드 호출
+		function enterKey(){
+			if(window.event.keyCode == 13){
+				$(function(){
+					submit();
+				})
+			}
+		}
+	
+		// ajax로 Controller에 환율계산요청
 		function submit(){
 			$.ajax({
 				url : "exchangeApi.ex",
@@ -41,12 +51,8 @@
 				}, error : function(){
 					console.log("ajax 통신 실패");
 				}
-				
 			})
-			
 		}
-	
-	
 	</script>
 	
 

@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wirebarley.codingtest.vo.RateVo;
@@ -22,8 +24,12 @@ public class exchangeRateCalculationController {
 	// 값 변경이 없을 것이기 때문에 상수로 처리
 	public static final String ACCESS_KEY = "b5d7ba68bebeb848d3430b4373623d0f";
 	
-	@RequestMapping("exchangeApi.ex")
-	public void exchangeApi(float remittance, String nation, HttpServletResponse response) throws IOException {
+	/**
+	 * api연결 후 실시간 환율정보 받기
+	 * @return
+	 * @throws IOException
+	 */
+	public RateVo connectApi() throws IOException {
 		
 		// 가독성을 위해 url분리
 		String url = "http://apilayer.net/api/live";
@@ -60,20 +66,44 @@ public class exchangeRateCalculationController {
 		// 5. 사용완료한 스트림 반납
 		br.close();
 		urlConnection.disconnect();
+
+		return rate;
+	}
+	
+	
+	/**
+	 * jsp파일에서 ajax로 요청한 환율계산
+	 * @param remittance
+	 * @param nation
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "exchangeApi.ex", produces="application/json; charset=UTF-8")
+	public String ercApi(float remittance, String nation, HttpServletResponse response) throws IOException {
 		
-		float result = 0;
+		// api연결 후 실시간 환율정보 받기
+		RateVo rate = connectApi();
 		
+		// 소숫점 2째자리까지 표현하기 위해 float형 변수 선언
+		float exchangeResult = 0;
+		
+		// 사용자가 선택한 수취국가에따라 수취금액 계산 => 
 		if(nation.equals("krw")) {
-			result = rate.getUsdKrw() * remittance;
+			exchangeResult = rate.getUsdKrw() * remittance;
 		} else if(nation.equals("jpy")) {
-			result = rate.getUsdJpy() * remittance;
+			exchangeResult = rate.getUsdJpy() * remittance;
 		} else {
-			result = rate.getUsdPhp() * remittance;
+			exchangeResult = rate.getUsdPhp() * remittance;
 		}
 		
-		String exchange = String.format("%.2f", result);
+		DecimalFormat df = new DecimalFormat("#,###.00");
 		
-		response.getWriter().print(exchange);
+		rate.setExchangeResult(df.format(exchangeResult));
+		
+//		response.getWriter().print(formatResult);
+		return new Gson().toJson(rate);
 	}
 
 }

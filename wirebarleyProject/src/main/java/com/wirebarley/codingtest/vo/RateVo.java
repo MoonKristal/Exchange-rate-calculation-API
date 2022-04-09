@@ -13,4 +13,6 @@ public class RateVo {
 	private float usdJpy;
 	private float usdPhp;
 	
+	private String exchangeResult;
+	
 }
