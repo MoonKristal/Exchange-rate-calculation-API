@@ -1,14 +1,10 @@
 div{
-    /* border: 1px solid black; */
     font-size: 18px;
     line-height: 35px;
 }
 .wrap{
     border: 3px solid lightsteelblue;
-    width: 330px;
-}
-.calculation{
-    padding-left: 25px;
+    width: 380px;
 }
 h1{
     padding-left: 25px;
@@ -17,6 +13,9 @@ h1{
 }
 select{
     height: 25px;
+}
+input{
+    width: 190px;
 }
 button{
     width: 150px;
