@@ -22,7 +22,7 @@ import com.wirebarley.codingtest.vo.RateVo;
 public class exchangeRateCalculationController {
 	
 	// 값 변경이 없을 것이기 때문에 상수로 처리
-	public static final String ACCESS_KEY = "b5d7ba68bebeb848d3430b4373623d0f";
+	public static final String ACCESS_KEY = "620d5b120478987cd52599ff98826de1";
 	
 	/**
 	 * api연결 후 실시간 환율정보 받기
@@ -72,6 +72,31 @@ public class exchangeRateCalculationController {
 	
 	
 	/**
+	 * 선택된 수취국가에 따른 환율정보
+	 * @param nation
+	 * @return
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getInfoRate.ex", produces="application/json; charset=UTF-8")
+	public String getInfoRate(String nation) throws IOException {
+		// api연결 후 실시간 환율정보 받기
+		RateVo rate = connectApi();
+		
+		DecimalFormat df = new DecimalFormat("#,###.00");
+		
+		if(nation.equals("krw")) {
+			rate.setStrUsdKrw(df.format(rate.getUsdKrw()));
+		} else if(nation.equals("jpy")) {
+			rate.setStrUsdJpy(df.format(rate.getUsdJpy()));
+		} else {
+			rate.setStrUsdPhp(df.format(rate.getUsdPhp()));
+		}
+		
+		return new Gson().toJson(rate);
+	}
+	
+	/**
 	 * jsp파일에서 ajax로 요청한 환율계산
 	 * @param remittance
 	 * @param nation
@@ -80,7 +105,7 @@ public class exchangeRateCalculationController {
 	 * @throws IOException
 	 */
 	@ResponseBody
-	@RequestMapping(value = "exchangeApi.ex", produces="application/json; charset=UTF-8")
+	@RequestMapping(value = "ercApi.ex", produces="application/json; charset=UTF-8")
 	public String ercApi(float remittance, String nation, HttpServletResponse response) throws IOException {
 		
 		// api연결 후 실시간 환율정보 받기
@@ -89,18 +114,21 @@ public class exchangeRateCalculationController {
 		// 소숫점 2째자리까지 표현하기 위해 float형 변수 선언
 		float exchangeResult = 0;
 		
-		// 사용자가 선택한 수취국가에따라 수취금액 계산 => 
+		// 사용자가 선택한 수취국가에따라 수취금액 계산 
 		if(nation.equals("krw")) {
-			exchangeResult = rate.getUsdKrw() * remittance;
+			exchangeResult = rate.getUsdKrw();
 		} else if(nation.equals("jpy")) {
-			exchangeResult = rate.getUsdJpy() * remittance;
+			exchangeResult = rate.getUsdJpy();
 		} else {
-			exchangeResult = rate.getUsdPhp() * remittance;
+			exchangeResult = rate.getUsdPhp();
 		}
+		
+		exchangeResult *= remittance;
 		
 		DecimalFormat df = new DecimalFormat("#,###.00");
 		
-		rate.setExchangeResult(df.format(exchangeResult));
+		rate.setExchangeResult(df.format(exchangeResult) + " " + nation.toUpperCase());
+		
 		
 //		response.getWriter().print(formatResult);
 		return new Gson().toJson(rate);
