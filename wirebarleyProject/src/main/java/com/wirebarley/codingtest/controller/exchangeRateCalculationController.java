@@ -9,16 +9,16 @@ import java.text.DecimalFormat;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.wirebarley.codingtest.vo.RateVo;
+import com.wirebarley.codingtest.model.vo.RateVo;
 
-@Controller
+@RestController
 public class exchangeRateCalculationController {
 	
 	// 값 변경이 없을 것이기 때문에 상수로 처리
@@ -129,8 +129,6 @@ public class exchangeRateCalculationController {
 		
 		rate.setExchangeResult(df.format(exchangeResult) + " " + nation.toUpperCase());
 		
-		
-//		response.getWriter().print(formatResult);
 		return new Gson().toJson(rate);
 	}
 

@@ -1,4 +1,4 @@
-package com.wirebarley.codingtest.vo;
+package com.wirebarley.codingtest.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
