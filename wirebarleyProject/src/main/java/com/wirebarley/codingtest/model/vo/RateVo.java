@@ -14,6 +14,8 @@ public class RateVo {
 	private float usdJpy;
 	private float usdPhp;
 	
+	private String chosenNation;
+	
 	// 문자형인 환율변수
 	private String strUsdKrw;
 	private String strUsdJpy;
