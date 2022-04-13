@@ -1,4 +1,4 @@
-package com.wirebarley.codingtest.controller;
+package com.wirebarley.codingtest.model.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,17 +9,19 @@ import java.text.DecimalFormat;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wirebarley.codingtest.model.vo.RateVo;
+import com.wirebarley.codingtest.model.vo.ResultVo;
 
-@RestController
-public class exchangeRateCalculationController {
+@Service
+public class ExchangeRateCalculationService {
+	
+	@Autowired(required=false)
+	private ResultVo result;
 	
 	// 값 변경이 없을 것이기 때문에 상수로 처리
 	public static final String ACCESS_KEY = "620d5b120478987cd52599ff98826de1";
@@ -71,15 +73,7 @@ public class exchangeRateCalculationController {
 	}
 	
 	
-	/**
-	 * 선택된 수취국가에 따른 환율정보
-	 * @param nation
-	 * @return
-	 * @throws IOException
-	 */
-	@ResponseBody
-	@RequestMapping(value = "getInfoRate.ex", produces="application/json; charset=UTF-8")
-	public String getInfoRate(String nation) throws IOException {
+	public RateVo getInfoRate(String nation) throws IOException {
 		// api연결 후 실시간 환율정보 받기
 		RateVo rate = connectApi();
 		
@@ -93,20 +87,11 @@ public class exchangeRateCalculationController {
 			rate.setStrUsdPhp(df.format(rate.getUsdPhp()));
 		}
 		
-		return new Gson().toJson(rate);
+		return rate;
 	}
 	
-	/**
-	 * jsp파일에서 ajax로 요청한 환율계산
-	 * @param remittance
-	 * @param nation
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@ResponseBody
-	@RequestMapping(value = "ercApi.ex", produces="application/json; charset=UTF-8")
-	public String ercApi(float remittance, String nation, HttpServletResponse response) throws IOException {
+	
+	public ResultVo ercApi(float remittance, String nation, HttpServletResponse response) throws IOException {
 		
 		// api연결 후 실시간 환율정보 받기
 		RateVo rate = connectApi();
@@ -127,9 +112,9 @@ public class exchangeRateCalculationController {
 		
 		DecimalFormat df = new DecimalFormat("#,###.00");
 		
-		rate.setExchangeResult(df.format(exchangeResult) + " " + nation.toUpperCase());
+		result.setExchangeResult(df.format(exchangeResult) + " " + nation.toUpperCase());
 		
-		return new Gson().toJson(rate);
+		return result;
 	}
-
+	
 }
