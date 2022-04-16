@@ -2,24 +2,21 @@ package com.wirebarley.codingtest.controller;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.wirebarley.codingtest.model.vo.RateVo;
 import com.wirebarley.codingtest.model.vo.ResultVo;
 import com.wirebarley.codingtest.service.ExchangeRateCalculationService;
 
-@Controller
+@RestController
 public class ExchangeRateCalculationController {
 	
 	@Autowired
 	private ExchangeRateCalculationService exchangeRateCalculationService;
-	
 	
 	/**
 	 * 선택된 수취국가에 따른 환율정보
@@ -52,9 +49,5 @@ public class ExchangeRateCalculationController {
 		
 		return new Gson().toJson(result);
 	}
-	
-	
-	
-	
 
 }

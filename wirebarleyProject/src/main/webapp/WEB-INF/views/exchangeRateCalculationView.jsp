@@ -54,24 +54,15 @@
 		$('#nation').on('change',function(){
 			searchExchangeRate();
 		})
-		// 환율정보를 가져올 ajax
+		// 사용자가 선택한 수취국가에 따른 환율정보를 가져올 ajax
 		function searchExchangeRate(){
 			$.ajax({
 				url : "getInfoRate.ex", // 요청을 보낼 url값
 				data : {
 					nation : $("#nation").val() // select의 value값 (사용자가 선택한 수취국가)
 				}, success : function(result){
-					var exchangeRate = ""; // 환율정보 변수 선언
-					// 사용자가 선택한 수취국가의 정보 변수 대입
-					if($("#nation").val() == "krw"){
-						exchangeRate += result.strUsdKrw;
-					} else if($("#nation").val() == "jpy"){
-						exchangeRate += result.strUsdJpy;
-					} else{
-						exchangeRate += result.strUsdPhp;
-					}
 					// 해당 국가의 환율정보 띄워주기
-					$(".exchangeRate").html(exchangeRate + " " + $("#nation").val().toUpperCase() + "/USD");
+					$(".exchangeRate").html(result.chosenNationRate + " " + $("#nation").val().toUpperCase() + "/USD");
 				}, error : function(){
 					console.log("ajax 통신 실패");
 				}

@@ -7,9 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonObject;
@@ -58,10 +55,8 @@ public class ExchangeRateCalculationService {
 		JsonObject quotesObj = totalObj.getAsJsonObject("quotes"); // quotes속성에 접근 : {} JsonObject
 		
 		
-		System.out.println(quotesObj.get("USDKRW"));
 		RateVo rate = new RateVo();
 		rate.setUsdKrw(quotesObj.get("USDKRW").getAsFloat());
-		System.out.println("?");
 		rate.setUsdJpy(quotesObj.get("USDJPY").getAsFloat());
 		rate.setUsdPhp(quotesObj.get("USDPHP").getAsFloat());
 
@@ -80,19 +75,8 @@ public class ExchangeRateCalculationService {
 		// formatting을 위한 객체 생성(세자리마다','와 소수점아래 두번째자리까지 표시) => format메소드사용
 		DecimalFormat df = new DecimalFormat("#,###.00");
 		
-//		String chosenNation = (nation.equals("krw"))? "krw" : nation.equals("jpy")? "jpy" : "php";
-		
-//		rate.setChosenNation(chosenNation); 
-		
-		// 사용자가 선택한 수취국가에 따라 각 나라의 환율 formatting
-		if(nation.equals("krw")) {
-			// connectApi메소드에서 가져온 환율정보 formatting -> String형 변수에 setter사용해서 값 저장(format메소드는 String형으로 반환-> ','와 '.'가 포함되어 있기 때문에)
-			rate.setStrUsdKrw(df.format(rate.getUsdKrw())); 
-		} else if(nation.equals("jpy")) {
-			rate.setStrUsdJpy(df.format(rate.getUsdJpy()));
-		} else {
-			rate.setStrUsdPhp(df.format(rate.getUsdPhp()));
-		}
+		// 사용자가 선택한 수취국가에 따라 각 나라의 환율 formatting -> String형 변수에 setter사용해서 값 저장(format메소드는 String형으로 반환 -> ','와 '.'가 포함되어 있기 때문에)
+		rate.setChosenNationRate((nation.equals("krw"))? df.format(rate.getUsdKrw()) : nation.equals("jpy")? df.format(rate.getUsdJpy()) : df.format(rate.getUsdPhp())); 
 		
 		return rate;
 	}
@@ -103,27 +87,17 @@ public class ExchangeRateCalculationService {
 		// api연결 후 실시간 환율정보 받기
 		RateVo rate = connectApi();
 		
-		// 소숫점 2째자리까지 표현하기 위해 float형 변수 선언
-		float exchangeResult = 0;
-		
-		// exchangeResult에 connectApi에서 가져온 각 나라의 환율 저장
-		if(nation.equals("krw")) {
-			exchangeResult = rate.getUsdKrw();
-		} else if(nation.equals("jpy")) {
-			exchangeResult = rate.getUsdJpy();
-		} else {
-			exchangeResult = rate.getUsdPhp();
-		}
+		// formatting을 위한 객체 생성(세자리마다','와 소수점아래 두번째자리까지 표시) => format메소드사용
+		DecimalFormat df = new DecimalFormat("#,###.00");
+
+		// 소숫점 2째자리까지 표현하기 위해 float형 변수 선언 후 connectApi에서 가져온 각 나라의 환율 저장
+		float exchangeResult = (nation.equals("krw"))? rate.getUsdKrw() : nation.equals("jpy")? rate.getUsdJpy() : rate.getUsdPhp();
 		
 		// exchangeResult에 있는 환율과 사용자에게 입력받은 송금액의 합계계산(수취금액)후 값 저장
 		exchangeResult *= remittance;
 		
-		// formatting을 위한 객체 생성(세자리마다','와 소수점아래 두번째자리까지 표시) => format메소드사용
-		DecimalFormat df = new DecimalFormat("#,###.00");
-		
-		ResultVo result = new ResultVo();
-		
 		// 수취금액 formatting후 사용자가 선택한 수취국가를 더해 String형 변수에 setter를 사용해서 값 저장
+		ResultVo result = new ResultVo();
 		result.setExchangeResult(df.format(exchangeResult) + " " + nation.toUpperCase());
 		
 		return result;
