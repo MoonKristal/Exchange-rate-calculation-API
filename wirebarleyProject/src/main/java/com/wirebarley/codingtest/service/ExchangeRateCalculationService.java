@@ -75,8 +75,15 @@ public class ExchangeRateCalculationService {
 		// formatting을 위한 객체 생성(세자리마다','와 소수점아래 두번째자리까지 표시) => format메소드사용
 		DecimalFormat df = new DecimalFormat("#,###.00");
 		
-		// 사용자가 선택한 수취국가에 따라 각 나라의 환율 formatting -> String형 변수에 setter사용해서 값 저장(format메소드는 String형으로 반환 -> ','와 '.'가 포함되어 있기 때문에)
-		rate.setChosenNationRate((nation.equals("krw"))? df.format(rate.getUsdKrw()) : nation.equals("jpy")? df.format(rate.getUsdJpy()) : df.format(rate.getUsdPhp())); 
+		// 사용자가 선택한 수취국가에 따라 각 나라의 환율 formatting 후 String형 변수에 setter사용해서 값 저장
+		// -> format메소드는 String형으로 반환 -> ','와 '.'가 포함되어 있기 때문에
+		if(nation.equals("krw")) {
+			rate.setChosenNationRate(df.format(rate.getUsdKrw()));
+		} else if(nation.equals("jpy")) {
+			rate.setChosenNationRate(df.format(rate.getUsdJpy()));
+		} else {
+			rate.setChosenNationRate(df.format(rate.getUsdPhp()));
+		}
 		
 		return rate;
 	}
