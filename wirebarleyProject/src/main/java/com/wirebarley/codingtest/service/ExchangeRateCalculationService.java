@@ -1,4 +1,4 @@
-package com.wirebarley.codingtest.model.service;
+package com.wirebarley.codingtest.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +19,6 @@ import com.wirebarley.codingtest.model.vo.ResultVo;
 
 @Service
 public class ExchangeRateCalculationService {
-	
-	@Autowired(required=false)
-	private ResultVo result;
 	
 	// 값 변경이 없을 것이기 때문에 상수로 처리
 	public static final String ACCESS_KEY = "620d5b120478987cd52599ff98826de1";
@@ -60,11 +57,14 @@ public class ExchangeRateCalculationService {
 		JsonObject totalObj = JsonParser.parseString(responseText).getAsJsonObject();
 		JsonObject quotesObj = totalObj.getAsJsonObject("quotes"); // quotes속성에 접근 : {} JsonObject
 		
+		
+		System.out.println(quotesObj.get("USDKRW"));
 		RateVo rate = new RateVo();
 		rate.setUsdKrw(quotesObj.get("USDKRW").getAsFloat());
+		System.out.println("?");
 		rate.setUsdJpy(quotesObj.get("USDJPY").getAsFloat());
 		rate.setUsdPhp(quotesObj.get("USDPHP").getAsFloat());
-		
+
 		// 5. 사용완료한 스트림 반납
 		br.close();
 		urlConnection.disconnect();
@@ -80,9 +80,9 @@ public class ExchangeRateCalculationService {
 		// formatting을 위한 객체 생성(세자리마다','와 소수점아래 두번째자리까지 표시) => format메소드사용
 		DecimalFormat df = new DecimalFormat("#,###.00");
 		
-		String chosenNation = (nation.equals("krw"))? "krw" : nation.equals("jpy")? "jpy" : "php";
+//		String chosenNation = (nation.equals("krw"))? "krw" : nation.equals("jpy")? "jpy" : "php";
 		
-		rate.setChosenNation(chosenNation); 
+//		rate.setChosenNation(chosenNation); 
 		
 		// 사용자가 선택한 수취국가에 따라 각 나라의 환율 formatting
 		if(nation.equals("krw")) {
@@ -98,7 +98,7 @@ public class ExchangeRateCalculationService {
 	}
 	
 	
-	public ResultVo ercApi(float remittance, String nation, HttpServletResponse response) throws IOException {
+	public ResultVo ercApi(float remittance, String nation) throws IOException {
 		
 		// api연결 후 실시간 환율정보 받기
 		RateVo rate = connectApi();
@@ -120,6 +120,8 @@ public class ExchangeRateCalculationService {
 		
 		// formatting을 위한 객체 생성(세자리마다','와 소수점아래 두번째자리까지 표시) => format메소드사용
 		DecimalFormat df = new DecimalFormat("#,###.00");
+		
+		ResultVo result = new ResultVo();
 		
 		// 수취금액 formatting후 사용자가 선택한 수취국가를 더해 String형 변수에 setter를 사용해서 값 저장
 		result.setExchangeResult(df.format(exchangeResult) + " " + nation.toUpperCase());

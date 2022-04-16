@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.wirebarley.codingtest.model.service.ExchangeRateCalculationService;
 import com.wirebarley.codingtest.model.vo.RateVo;
 import com.wirebarley.codingtest.model.vo.ResultVo;
+import com.wirebarley.codingtest.service.ExchangeRateCalculationService;
 
 @Controller
 public class ExchangeRateCalculationController {
@@ -46,9 +46,9 @@ public class ExchangeRateCalculationController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "ercApi.ex", produces="application/json; charset=UTF-8")
-	public String ercApi(float remittance, String nation, HttpServletResponse response) throws IOException {
+	public String ercApi(float remittance, String nation) throws IOException {
 		
-		ResultVo result = exchangeRateCalculationService.ercApi(remittance, nation, response);
+		ResultVo result = exchangeRateCalculationService.ercApi(remittance, nation);
 		
 		return new Gson().toJson(result);
 	}
