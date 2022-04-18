@@ -1,4 +1,4 @@
-package com.wirebarley.codingtest.service;
+package com.wirebarley.codingtest.model.service;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;

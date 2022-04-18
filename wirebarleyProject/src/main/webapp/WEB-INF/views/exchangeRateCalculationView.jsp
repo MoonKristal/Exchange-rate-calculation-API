@@ -104,17 +104,8 @@
 				$('.btn').attr('disabled', true); 
 				$('.condition').show(); // 사이값이 아니면 보여질 문구 노출
 			}
-
 		})
-		
-
-
-
-
-
 	</script>
-	
-
 
 </body>
 </html>

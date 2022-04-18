@@ -1,4 +1,4 @@
-package com.wirebarley.codingtest.service;
+package com.wirebarley.codingtest.model.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +53,6 @@ public class ExchangeRateCalculationService {
 		// 각각의 quotes정보를  rateVO객체에 담기
 		JsonObject totalObj = JsonParser.parseString(responseText).getAsJsonObject();
 		JsonObject quotesObj = totalObj.getAsJsonObject("quotes"); // quotes속성에 접근 : {} JsonObject
-		
 		
 		RateVo rate = new RateVo();
 		rate.setUsdKrw(quotesObj.get("USDKRW").getAsFloat());

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.wirebarley.codingtest.model.service.ExchangeRateCalculationService;
 import com.wirebarley.codingtest.model.vo.RateVo;
 import com.wirebarley.codingtest.model.vo.ResultVo;
-import com.wirebarley.codingtest.service.ExchangeRateCalculationService;
 
 @RestController
 public class ExchangeRateCalculationController {
